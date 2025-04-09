@@ -36,9 +36,7 @@ function App() {
   };
 
   const deleteTodo = (id) => {
-    console.log("Delete id:", id);
     setTodos(todos.filter(todo => todo.id !== id));
-    
   };
   
   // console.log("Rendering todos:", todos);
@@ -60,10 +58,16 @@ function App() {
     <div>
       <h1>To-Do List</h1>
       <input 
+        name="todo task"
+        placeholder="My next task"
         type="text"
         value={task}
         onChange={(e) => setTask(e.target.value)}
-        placeholder="My next task"
+        onKeyDown={(e) => {
+          if (e.key==="Enter") {
+            addTodo()
+          }
+        }}
       />
       <button onClick={addTodo}>Add</button>
       <ul>
