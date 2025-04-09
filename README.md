@@ -1,6 +1,16 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+📌 Product Name:
+Simple To-Do List App
+
+🧠 Objective:
+Allow users to manage daily tasks by adding, completing, and removing items from a to-do list.
+
+🎯 Goals:
+Users can add a task.
+Users can mark a task as complete/incomplete.
+Users can delete a task.
+- App persists tasks locally between page reloads.
 
 Currently, two official plugins are available:
 

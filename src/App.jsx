@@ -1,34 +1,82 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState , useEffect } from 'react'
+import './styles/App.css'
+import TodoItem from './components/TodoItem'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [task, setTask] = useState(""); //holds current inputed task
+  const [todos, setTodos] = useState([]); //holds all todos
+  
+  // load todos from local Storage when component first mounts
+  useEffect(() => {
+    const savedTodos = JSON.parse(localStorage.getItem("todos"));
+    // console.log("raw localStorage:", localStorage.getItem("todos"));
+    // console.log("parsed localStorage:", savedTodos);
+    if (savedTodos) {
+      // console.log("Parsed todos:", savedTodos);
+      setTodos(savedTodos);
+      // console.log("typeof parsed:", typeof savedTodos);
+      // console.log("todos set:", savedTodos);
+    }
+  }, []); //empty dependency array = only run once on mount
+
+  useEffect(() => {
+    if (todos.length > 0) {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }, [todos]); // run this effect to save every time "todos" changes
+
+  // toggleTodo function updates todos
+  // passing the id of clicked todo item as parameter
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed }: todo
+      )
+    );
+  };
+
+  const deleteTodo = (id) => {
+    console.log("Delete id:", id);
+    setTodos(todos.filter(todo => todo.id !== id));
+    
+  };
+  
+  // console.log("Rendering todos:", todos);
+
+  const addTodo = () => { 
+    if (!task.trim()) return;
+
+    const newTodo = {
+      id: Date.now(),
+      text: task.trim(),
+      completed: false
+    };
+    setTodos([...todos, newTodo]);
+    setTask(""); //clears input after adding todo
+  };
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>To-Do List</h1>
+      <input 
+        type="text"
+        value={task}
+        onChange={(e) => setTask(e.target.value)}
+        placeholder="My next task"
+      />
+      <button onClick={addTodo}>Add</button>
+      <ul>
+        {todos.map((todo, index) => (
+          <TodoItem 
+            key = {todo.id}
+            todo = {todo}
+            onToggle={toggleTodo}
+            onDelete={deleteTodo}
+          />
+        ))}
+      </ul>
+    </div>
   )
 }
 
